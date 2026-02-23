@@ -5,10 +5,15 @@
 #include <lvgl_zephyr.h>
 #include <lv_demos.h>
 #include <stdio.h>
+#include <stdint.h>
+#include "../shared/shared.h"
 
 #define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(lvgl_demo);
+
+#define GRAPHICS_WARMUP_MS 5000U
+#define GRAPHICS_RELEASED_THREADS 4U
 
 void lvgl_demo_thread(void)
 {
@@ -23,6 +28,8 @@ void lvgl_demo_thread(void)
         LOG_ERR("Display device not ready, aborting LVGL demo");
         return;
     }
+
+    LOG_INF("LVGL demo thread starting on %p", display_dev);
 
     lvgl_lock();
 
@@ -55,11 +62,23 @@ void lvgl_demo_thread(void)
     lvgl_unlock();
 
     display_blanking_off(display_dev);
+#if defined(CONFIG_LOG)
+    LOG_INF("LVGL demo entering main loop");
+#endif
 #ifdef CONFIG_LV_Z_MEM_POOL_SYS_HEAP
     lvgl_print_heap_info(false);
 #else
     printf("lvgl in malloc mode\n");
 #endif
+
+    /*
+     * Give graphics a brief warmup window before other app threads proceed.
+     * This acts as a deterministic startup barrier.
+     */
+    k_msleep(GRAPHICS_WARMUP_MS);
+    for (uint32_t i = 0; i < GRAPHICS_RELEASED_THREADS; i++) {
+        k_sem_give(&graphics_ready_sem);
+    }
 
     while (1) {
 #ifndef CONFIG_LV_Z_RUN_LVGL_ON_WORKQUEUE
@@ -68,6 +87,22 @@ void lvgl_demo_thread(void)
         lvgl_lock();
         sleep_ms = lv_timer_handler();
         lvgl_unlock();
+
+        /*
+         * Avoid a tight zero-delay loop if LVGL reports immediate work.
+         * This keeps other threads responsive while debugging freezes.
+         */
+        if (sleep_ms == 0U) {
+            sleep_ms = 2U;
+        }
+
+        /* Heartbeat so we can tell if LVGL loop is still running */
+        static uint32_t last_report = 0;
+        uint32_t now = k_uptime_get_32();
+        if (now - last_report > 5000U) {
+            LOG_INF("LVGL heartbeat");
+            last_report = now;
+        }
 
         k_msleep(MIN(sleep_ms, INT32_MAX));
 #else

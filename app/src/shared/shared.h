@@ -6,16 +6,21 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/sys/printk.h>
+#include <zephyr/sys/atomic.h>
 
 #define SLEEP_TIME_MS 1
 
 struct printk_data_t {
-    void *fifo_reserved; /* 1st word reserved for use by fifo */
     uint32_t gpio;
     uint32_t count;
 };
 
-extern struct k_fifo printk_fifo;
+extern struct k_msgq printk_msgq;
+extern struct k_sem button_sem;
+extern struct k_sem graphics_ready_sem;
+extern atomic_t printk_drop_count;
+extern atomic_t button_irq_count;
+extern atomic_t button_handled_count;
 
 struct led {
     struct gpio_dt_spec spec;

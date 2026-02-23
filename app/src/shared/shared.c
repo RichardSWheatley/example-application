@@ -1,6 +1,12 @@
 #include "shared.h"
 
-K_FIFO_DEFINE(printk_fifo);
+K_MSGQ_DEFINE(printk_msgq, sizeof(struct printk_data_t), 16, 4);
+
+K_SEM_DEFINE(button_sem, 0, K_SEM_MAX_LIMIT);
+K_SEM_DEFINE(graphics_ready_sem, 0, K_SEM_MAX_LIMIT);
+atomic_t printk_drop_count;
+atomic_t button_irq_count;
+atomic_t button_handled_count;
 
 #define LED0_NODE DT_ALIAS(led0)
 #define LED1_NODE DT_ALIAS(led1)

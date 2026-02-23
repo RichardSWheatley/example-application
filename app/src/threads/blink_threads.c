@@ -2,7 +2,6 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/sys/printk.h>
 #include <zephyr/sys/__assert.h>
-#include <string.h>
 #include "../shared/shared.h"
 
 static void blink(const struct led *ledp, uint32_t sleep_ms, uint32_t id)
@@ -23,18 +22,18 @@ static void blink(const struct led *ledp, uint32_t sleep_ms, uint32_t id)
         return;
     }
 
+    /* Keep non-graphics threads blocked until LVGL startup warmup completes. */
+    k_sem_take(&graphics_ready_sem, K_FOREVER);
+
     while (1) {
         gpio_pin_set_dt(spec, cnt % 2);
 
         struct printk_data_t tx_data = { .gpio = id, .count = cnt };
 
-        size_t size = sizeof(struct printk_data_t);
-        char *mem_ptr = k_malloc(size);
-        __ASSERT_NO_MSG(mem_ptr != 0);
-
-        memcpy(mem_ptr, &tx_data, size);
-
-        k_fifo_put(&printk_fifo, mem_ptr);
+        int rc = k_msgq_put(&printk_msgq, &tx_data, K_NO_WAIT);
+        if (rc != 0) {
+            atomic_inc(&printk_drop_count);
+        }
 
         k_msleep(sleep_ms);
         cnt++;

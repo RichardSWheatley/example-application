@@ -4,7 +4,7 @@
 
 choice LV_Z_DEMO
 	prompt "LVGL demo to build"
-	default LV_Z_DEMO_RENDER
+	default LV_Z_DEMO_MUSIC
 	help
 	  Demo application to build.
 
@@ -53,6 +53,7 @@ if LV_Z_DEMO_RENDER
 
 config LV_Z_DEMO_RENDER_SCENE_DYNAMIC
 	bool "Switch scenes dynamically"
+    default y
 	help
 	  Switch between scenes to render dynamically.
 

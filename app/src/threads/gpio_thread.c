@@ -7,12 +7,32 @@
 void button_pressed(const struct device *dev, struct gpio_callback *cb,
             uint32_t pins)
 {
-    printk("Button pressed at %" PRIu32 "\n", k_cycle_get_32());
+    ARG_UNUSED(dev);
+    ARG_UNUSED(cb);
+
+    atomic_inc(&button_irq_count);
+
+    /* Enqueue a short message for the print queue (non-blocking) so
+        * the heavier printk work can be done in thread context. */
+    struct printk_data_t tx_data = {
+        .gpio = pins, /* store the pins bitmask */
+        .count = 0,   /* ISR doesn't track counts */
+    };
+    int rc = k_msgq_put(&printk_msgq, &tx_data, K_NO_WAIT);
+    if (rc != 0) {
+        atomic_inc(&printk_drop_count);
+    }
+
+    /* Wake the gpio thread to handle the button event. */
+    k_sem_give(&button_sem);
 }
 
 void gpio_thread(void)
 {
     int status;
+
+    /* Keep non-graphics threads blocked until LVGL startup warmup completes. */
+    k_sem_take(&graphics_ready_sem, K_FOREVER);
 
     if (!gpio_is_ready_dt(&button)) {
         printk("Error: button device %s is not ready\n",
@@ -55,8 +75,10 @@ void gpio_thread(void)
     printk("Press the button\n");
     if (led.port) {
         while (1) {
+            /* wait for button press signalled by ISR */
+            k_sem_take(&button_sem, K_FOREVER);
+            atomic_inc(&button_handled_count);
             int val = gpio_pin_get_dt(&button);
-
             if (val >= 0) {
                 gpio_pin_set_dt(&led, val);
             }
