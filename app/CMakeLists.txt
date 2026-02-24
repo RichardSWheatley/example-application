@@ -20,7 +20,6 @@ target_sources(app PRIVATE
   src/main.c
   src/shared/shared.c
   src/threads/blink_threads.c
-  src/threads/uart_out.c
   src/threads/gpio_thread.c
   src/threads/lvgl_demo.c
 )

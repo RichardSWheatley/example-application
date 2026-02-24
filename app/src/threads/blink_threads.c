@@ -1,6 +1,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/sys/printk.h>
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(blink, LOG_LEVEL_INF);
 #include <zephyr/sys/__assert.h>
 #include "../shared/shared.h"
 
@@ -11,13 +13,13 @@ static void blink(const struct led *ledp, uint32_t sleep_ms, uint32_t id)
     int ret;
 
     if (!device_is_ready(spec->port)) {
-        printk("Error: %s device is not ready\n", spec->port->name);
+        LOG_ERR("Error: %s device is not ready", spec->port->name);
         return;
     }
 
     ret = gpio_pin_configure_dt(spec, GPIO_OUTPUT);
     if (ret != 0) {
-        printk("Error %d: failed to configure pin %d (LED '%d')\n",
+        LOG_ERR("Error %d: failed to configure pin %d (LED '%d')",
                ret, spec->pin, ledp->num);
         return;
     }
@@ -28,12 +30,7 @@ static void blink(const struct led *ledp, uint32_t sleep_ms, uint32_t id)
     while (1) {
         gpio_pin_set_dt(spec, cnt % 2);
 
-        struct printk_data_t tx_data = { .gpio = id, .count = cnt };
-
-        int rc = k_msgq_put(&printk_msgq, &tx_data, K_NO_WAIT);
-        if (rc != 0) {
-            atomic_inc(&printk_drop_count);
-        }
+        LOG_INF("Toggled led%u; counter=%d", (unsigned)ledp->num, cnt);
 
         k_msleep(sleep_ms);
         cnt++;

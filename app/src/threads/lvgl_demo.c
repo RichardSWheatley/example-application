@@ -8,12 +8,38 @@
 #include <stdint.h>
 #include "../shared/shared.h"
 
+#include <zephyr/cache.h>
+
 #define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(lvgl_demo);
 
 #define GRAPHICS_WARMUP_MS 5000U
 #define GRAPHICS_RELEASED_THREADS 4U
+
+static void dbg_log_lvgl(const char *hypothesis_id, const char *location, const char *message,
+             int v1, int v2, int v3)
+{
+    dbg_uart_emit(hypothesis_id, location, message, v1, v2, v3);
+}
+
+static void lv_draw_buf_flush_cb(const lv_draw_buf_t *draw_buf, const lv_area_t *area)
+{
+    if (!draw_buf) return;
+    if (draw_buf->unaligned_data && draw_buf->data_size) {
+        sys_cache_data_flush_range(draw_buf->unaligned_data, draw_buf->data_size);
+        __DSB();
+    }
+}
+
+static void lv_draw_buf_invalidate_cb(const lv_draw_buf_t *draw_buf, const lv_area_t *area)
+{
+    if (!draw_buf) return;
+    if (draw_buf->unaligned_data && draw_buf->data_size) {
+        sys_cache_data_invd_range(draw_buf->unaligned_data, draw_buf->data_size);
+        __DSB();
+    }
+}
 
 void lvgl_demo_thread(void)
 {
@@ -30,6 +56,18 @@ void lvgl_demo_thread(void)
     }
 
     LOG_INF("LVGL demo thread starting on %p", display_dev);
+
+    /* Install draw buffer cache maintenance callbacks so LVGL will flush/
+     * invalidate CPU caches when buffers are used with the GPU. This helps
+     * avoid corruption when LVGL allocates buffers in cached memory.
+     */
+    {
+        lv_draw_buf_handlers_t *handlers = lv_draw_buf_get_handlers();
+        if (handlers) {
+            handlers->flush_cache_cb = lv_draw_buf_flush_cb;
+            handlers->invalidate_cache_cb = lv_draw_buf_invalidate_cb;
+        }
+    }
 
     lvgl_lock();
 
@@ -71,6 +109,10 @@ void lvgl_demo_thread(void)
     printf("lvgl in malloc mode\n");
 #endif
 
+    // #region agent log
+    dbg_log_lvgl("H2", "lvgl_demo.c:88", "lvgl_init_complete", GRAPHICS_WARMUP_MS, 0, 0);
+    // #endregion
+
     /*
      * Give graphics a brief warmup window before other app threads proceed.
      * This acts as a deterministic startup barrier.
@@ -83,25 +125,24 @@ void lvgl_demo_thread(void)
     while (1) {
 #ifndef CONFIG_LV_Z_RUN_LVGL_ON_WORKQUEUE
         uint32_t sleep_ms;
+        static uint32_t last_loop_ms;
+        uint32_t loop_start_ms = k_uptime_get_32();
+        uint32_t handler_start_ms;
+        uint32_t handler_dur_ms;
 
+        handler_start_ms = k_uptime_get_32();
         lvgl_lock();
         sleep_ms = lv_timer_handler();
         lvgl_unlock();
+        handler_dur_ms = k_uptime_get_32() - handler_start_ms;
+        last_loop_ms = loop_start_ms;
 
         /*
          * Avoid a tight zero-delay loop if LVGL reports immediate work.
          * This keeps other threads responsive while debugging freezes.
          */
         if (sleep_ms == 0U) {
-            sleep_ms = 2U;
-        }
-
-        /* Heartbeat so we can tell if LVGL loop is still running */
-        static uint32_t last_report = 0;
-        uint32_t now = k_uptime_get_32();
-        if (now - last_report > 5000U) {
-            LOG_INF("LVGL heartbeat");
-            last_report = now;
+            sleep_ms = 1U;
         }
 
         k_msleep(MIN(sleep_ms, INT32_MAX));

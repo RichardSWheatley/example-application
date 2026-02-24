@@ -10,17 +10,26 @@
 
 #define SLEEP_TIME_MS 1
 
-struct printk_data_t {
-    uint32_t gpio;
-    uint32_t count;
+/* legacy numeric printk messages removed; use Zephyr logging */
+
+struct dbg_uart_event_t {
+    const char *hypothesis_id;
+    const char *location;
+    const char *message;
+    int32_t v1;
+    int32_t v2;
+    int32_t v3;
+    uint32_t timestamp_ms;
 };
 
-extern struct k_msgq printk_msgq;
 extern struct k_sem button_sem;
 extern struct k_sem graphics_ready_sem;
 extern atomic_t printk_drop_count;
 extern atomic_t button_irq_count;
 extern atomic_t button_handled_count;
+
+void dbg_uart_emit(const char *hypothesis_id, const char *location, const char *message,
+                   int32_t v1, int32_t v2, int32_t v3);
 
 struct led {
     struct gpio_dt_spec spec;

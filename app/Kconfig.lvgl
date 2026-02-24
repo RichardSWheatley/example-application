@@ -4,7 +4,8 @@
 
 choice LV_Z_DEMO
 	prompt "LVGL demo to build"
-	default LV_Z_DEMO_MUSIC
+	# default LV_Z_DEMO_WIDGETS
+	default LV_Z_DEMO_RENDER
 	help
 	  Demo application to build.
 
