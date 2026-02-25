@@ -3,25 +3,11 @@
 
 LOG_MODULE_REGISTER(shared, LOG_LEVEL_INF);
 
-
 K_SEM_DEFINE(button_sem, 0, K_SEM_MAX_LIMIT);
 K_SEM_DEFINE(graphics_ready_sem, 0, K_SEM_MAX_LIMIT);
 atomic_t printk_drop_count;
 atomic_t button_irq_count;
 atomic_t button_handled_count;
-
-/* Emit a structured debug event — now routed to Zephyr logging directly. */
-void dbg_uart_emit(const char *hypothesis_id, const char *location, const char *message,
-                   int32_t v1, int32_t v2, int32_t v3)
-{
-    ARG_UNUSED(hypothesis_id);
-    ARG_UNUSED(location);
-    ARG_UNUSED(message);
-
-    /* Use LOG_INF to ensure visibility; lvgl_debug calls provide context */
-    LOG_INF("[DBG][%s][%s] %s v1=%d v2=%d v3=%d ts=%u",
-            hypothesis_id, location, message, v1, v2, v3, k_uptime_get_32());
-}
 
 #define LED0_NODE DT_ALIAS(led0)
 #define LED1_NODE DT_ALIAS(led1)
