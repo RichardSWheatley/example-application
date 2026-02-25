@@ -11,13 +11,12 @@
 LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 
 /* Keep worker threads larger during debug to catch/avoid stack starvation. */
-#define STACKSIZE 4096
+#define STACKSIZE 1024
 #define LVGL_STACKSIZE 8192
 
 /* scheduling priority used by each thread */
 #define PRIORITY 7
 #define LVGL_PRIORITY 9
-#define UART_OUT_PRIORITY 11
 
 /* Keep uart_out active for diagnostics; disable other non-graphics threads. */
 K_THREAD_DEFINE(blink0_id, STACKSIZE, blink0_thread, NULL, NULL, NULL,
@@ -38,7 +37,6 @@ int main(void)
 
     if (rc == 0) {
         LOG_INF("[boot] reset cause: 0x%08x", (unsigned int)cause);
-        (void)hwinfo_clear_reset_cause();
     } else {
         LOG_ERR("[boot] reset cause unavailable (err %d)", rc);
     }
