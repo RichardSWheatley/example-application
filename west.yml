@@ -6,13 +6,13 @@ manifest:
     west-commands: scripts/west-commands.yml
 
   remotes:
-    - name: zephyrproject-rtos
-      url-base: https://github.com/zephyrproject-rtos
+    - name: zephyr-ambiq-internal
+      url-base: https://github.com/AmbiqMicro/zephyr-ambiq-internal
 
   projects:
     - name: zephyr
-      remote: zephyrproject-rtos
-      revision: main
+      remote: zephyr-ambiq-internal
+      revision: gpu-fix-apollo5
       import:
         # By using name-allowlist we can clone only the modules that are
         # strictly needed by the application.
