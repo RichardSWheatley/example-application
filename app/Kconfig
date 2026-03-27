@@ -15,5 +15,4 @@ module-str = APP
 source "subsys/logging/Kconfig.template.log_config"
  
 # Include LVGL demo choices (local copy to avoid recursive Kconfig includes)
-# Use $srctree-relative path so the kconfig parser can locate the file during build
-source "$srctree/../apollo510-evb-app/app/Kconfig.lvgl"
+rsource "Kconfig.lvgl"

@@ -5,7 +5,6 @@ LOG_MODULE_REGISTER(shared, LOG_LEVEL_INF);
 
 K_SEM_DEFINE(button_sem, 0, K_SEM_MAX_LIMIT);
 K_SEM_DEFINE(graphics_ready_sem, 0, K_SEM_MAX_LIMIT);
-atomic_t printk_drop_count;
 atomic_t button_irq_count;
 atomic_t button_handled_count;
 
@@ -30,10 +29,10 @@ atomic_t button_handled_count;
 #error "Unsupported board: sw0 devicetree alias is not defined"
 #endif
 
-struct gpio_dt_spec button = GPIO_DT_SPEC_GET_OR(SW0_NODE, gpios, {0});
+const struct gpio_dt_spec button = GPIO_DT_SPEC_GET_OR(SW0_NODE, gpios, {0});
 struct gpio_callback button_cb_data;
 
-struct gpio_dt_spec led = GPIO_DT_SPEC_GET_OR(DT_ALIAS(led0), gpios, {0});
+const struct gpio_dt_spec led = GPIO_DT_SPEC_GET_OR(DT_ALIAS(led0), gpios, {0});
 
 const struct led led0 = {
     .spec = GPIO_DT_SPEC_GET_OR(LED0_NODE, gpios, {0}),

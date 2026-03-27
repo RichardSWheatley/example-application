@@ -10,9 +10,8 @@
 
 #include <zephyr/cache.h>
 
-#define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(lvgl_demo);
+LOG_MODULE_REGISTER(lvgl_demo, CONFIG_APP_LOG_LEVEL);
 
 #define GRAPHICS_WARMUP_MS 3000U
 #define GRAPHICS_RELEASED_THREADS 4U
@@ -104,10 +103,6 @@ void lvgl_demo_thread(void) {
 #else
   printf("lvgl in malloc mode\n");
 #endif
-
-  // #region agent log
-  LOG_INF("[DBG][lvgl] v1=%d v2=%d v3=%d", GRAPHICS_WARMUP_MS, 0, 0);
-  // #endregion
 
   /*
    * Give graphics a brief warmup window before other app threads proceed.

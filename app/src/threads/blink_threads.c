@@ -1,7 +1,6 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/sys/printk.h>
 LOG_MODULE_REGISTER(blink, LOG_LEVEL_INF);
 #include "../shared/shared.h"
 #include <zephyr/sys/__assert.h>

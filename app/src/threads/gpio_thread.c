@@ -1,7 +1,6 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/sys/printk.h>
 LOG_MODULE_REGISTER(gpio, LOG_LEVEL_INF);
 #include "../shared/shared.h"
 #include <inttypes.h>
@@ -25,18 +24,21 @@ void gpio_thread(void) {
 
   if (!gpio_is_ready_dt(&button)) {
     LOG_ERR("Error: button device %s is not ready", button.port->name);
+    return;
   }
 
   status = gpio_pin_configure_dt(&button, GPIO_INPUT);
   if (status != 0) {
     LOG_ERR("Error %d: failed to configure %s pin %d", status,
             button.port->name, button.pin);
+    return;
   }
 
   status = gpio_pin_interrupt_configure_dt(&button, GPIO_INT_EDGE_TO_ACTIVE);
   if (status != 0) {
     LOG_ERR("Error %d: failed to configure interrupt on %s pin %d", status,
             button.port->name, button.pin);
+    return;
   }
 
   gpio_init_callback(&button_cb_data, button_pressed, BIT(button.pin));
