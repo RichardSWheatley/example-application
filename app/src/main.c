@@ -1,7 +1,6 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/hwinfo.h>
 #include <zephyr/drivers/watchdog.h>
-#include <zephyr/sys/printk.h>
 #include "shared/shared.h"
 #include "threads/blink_threads.h"
 #include "threads/gpio_thread.h"
