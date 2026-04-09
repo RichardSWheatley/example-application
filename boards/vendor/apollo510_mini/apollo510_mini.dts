@@ -250,7 +250,7 @@ zephyr_udc0: &usb {
 &pdm0 {
 	pinctrl-0 = <&pdm0_default>;
 	pinctrl-names = "default";
-	status = "disabled";
+	status = "okay";
 };
 
 &audadc0 {

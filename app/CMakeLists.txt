@@ -22,6 +22,7 @@ target_sources(app PRIVATE
   src/threads/blink_threads.c
   src/threads/gpio_thread.c
   src/threads/lvgl_demo.c
+  src/threads/audio_thread.c
 )
 
 target_include_directories(app PRIVATE

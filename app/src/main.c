@@ -5,16 +5,19 @@
 #include "threads/blink_threads.h"
 #include "threads/gpio_thread.h"
 #include "threads/lvgl_demo.h"
+#include "threads/audio_thread.h"
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 
 /* Keep worker threads larger during debug to catch/avoid stack starvation. */
 #define STACKSIZE 1024
+#define AUDIO_STACKSIZE 4096
 #define LVGL_STACKSIZE 8192
 
 /* scheduling priority used by each thread */
 #define PRIORITY 7
+#define AUDIO_PRIORITY 8
 #define LVGL_PRIORITY 9
 
 /* Keep uart_out active for diagnostics; disable other non-graphics threads. */
@@ -24,6 +27,8 @@ K_THREAD_DEFINE(blink1_id, STACKSIZE, blink1_thread, NULL, NULL, NULL,
     PRIORITY, 0, 0);
 K_THREAD_DEFINE(gpio_id, STACKSIZE, gpio_thread, NULL, NULL, NULL,
     PRIORITY, 0, 0);
+K_THREAD_DEFINE(audio_id, AUDIO_STACKSIZE, audio_thread, NULL, NULL, NULL,
+    AUDIO_PRIORITY, 0, 0);
 K_THREAD_DEFINE(lvgl_demo_id, LVGL_STACKSIZE, lvgl_demo_thread, NULL, NULL, NULL,
     LVGL_PRIORITY, 0, 0);
 

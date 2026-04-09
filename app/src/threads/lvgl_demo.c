@@ -14,7 +14,7 @@
 LOG_MODULE_REGISTER(lvgl_demo, CONFIG_APP_LOG_LEVEL);
 
 #define GRAPHICS_WARMUP_MS 3000U
-#define GRAPHICS_RELEASED_THREADS 4U
+#define GRAPHICS_RELEASED_THREADS 5U
 
 static void lv_draw_buf_flush_cb(const lv_draw_buf_t *draw_buf,
                                  const lv_area_t *area) {
