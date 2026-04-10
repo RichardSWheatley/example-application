@@ -77,8 +77,8 @@ void audio_thread(void)
 		uint32_t rc = am_hal_clkmgr_board_info_get(&sClkInfo);
 
 		if (rc == AM_HAL_STATUS_SUCCESS && sClkInfo.sXtalHs.ui32XtalHsFreq != 0) {
-			printk("\nHAL DIAG: board-info present: XTAL_HS=%u XTAL_LS=%u\n",
-				   sClkInfo.sXtalHs.ui32XtalHsFreq, sClkInfo.sXtalLs.ui32XtalLsFreq);
+			LOG_DBG("HAL DIAG: board-info present: XTAL_HS=%u XTAL_LS=%u",
+				    sClkInfo.sXtalHs.ui32XtalHsFreq, sClkInfo.sXtalLs.ui32XtalLsFreq);
 		} else {
 			/* Populate known board XTAL settings so CLKMGR can generate PLLs
 			 * when requested by the driver. This is deterministic and uses the
@@ -90,8 +90,8 @@ void audio_thread(void)
 			sClkInfo.sXtalLs.ui32XtalLsFreq = 32768U;
 			sClkInfo.ui32ExtRefClkFreq = 0U;
 			am_hal_clkmgr_board_info_set(&sClkInfo);
-			printk("\nHAL DIAG: board-info set: XTAL_HS=%u XTAL_LS=%u\n",
-				   sClkInfo.sXtalHs.ui32XtalHsFreq, sClkInfo.sXtalLs.ui32XtalLsFreq);
+			LOG_DBG("HAL DIAG: board-info set: XTAL_HS=%u XTAL_LS=%u",
+				    sClkInfo.sXtalHs.ui32XtalHsFreq, sClkInfo.sXtalLs.ui32XtalLsFreq);
 		}
 
 		/* Minimal diagnostics: report whether SYSPLL is already configured. */
@@ -99,8 +99,8 @@ void audio_thread(void)
 		uint32_t users = 0;
 		rc = am_hal_clkmgr_clock_config_get(AM_HAL_CLKMGR_CLK_ID_SYSPLL, &syspll_freq, NULL);
 		(void)am_hal_clkmgr_clock_status_get(AM_HAL_CLKMGR_CLK_ID_SYSPLL, &users);
-		printk("\nHAL DIAG: SYSPLL cfg_freq=%u user_count=%u (cfg_get rc=%u)\n",
-			   syspll_freq, users, rc);
+		LOG_DBG("HAL DIAG: SYSPLL cfg_freq=%u user_count=%u (cfg_get rc=%u)",
+			    syspll_freq, users, rc);
 	}
 
 	ret = dmic_configure(dmic_dev, &cfg);
@@ -163,8 +163,8 @@ void audio_thread(void)
 
 		static bool diag_shown = false;
 		if (!diag_shown) {
-			printk("Audio DIAG: bytes_per_sample=%d num_samples=%u left_aligned=%d\n",
-				   bytes_per_sample, (unsigned)num_samples, left_aligned);
+			LOG_DBG("Audio DIAG: bytes_per_sample=%d num_samples=%u left_aligned=%d",
+				    bytes_per_sample, (unsigned)num_samples, left_aligned);
 			diag_shown = true;
 		}
 

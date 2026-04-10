@@ -35,6 +35,7 @@ static void blink(const struct led *ledp, uint32_t sleep_ms, uint32_t id) {
   }
 }
 
-void blink0_thread(void) { blink(&led1, 2000, 0); }
+/* Make LED blink less often (increase period) so they're less distracting. */
+void blink0_thread(void) { blink(&led1, 7000, 0); }
 
-void blink1_thread(void) { blink(&led2, 5000, 1); }
+void blink1_thread(void) { blink(&led2, 12000, 1); }

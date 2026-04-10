@@ -23,6 +23,7 @@ target_sources(app PRIVATE
   src/threads/gpio_thread.c
   src/threads/lvgl_demo.c
   src/threads/audio_thread.c
+  src/threads/rtc_thread.c
 )
 
 target_include_directories(app PRIVATE

@@ -39,6 +39,7 @@
 
 	aliases {
 		watchdog0 = &wdt0;
+		rtc = &rtc0;
 		led0 = &led0;
 		led1 = &led1;
 		led2 = &led2;
@@ -157,7 +158,7 @@
 };
 
 &rtc0 {
-	status = "disabled";
+	status = "okay";
 	clock = "XTAL";
 };
 
