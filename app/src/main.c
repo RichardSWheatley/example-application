@@ -6,6 +6,7 @@
 #include "threads/gpio_thread.h"
 #include "threads/lvgl_demo.h"
 #include "threads/audio_thread.h"
+#include "threads/rtc_thread.h"
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
@@ -29,6 +30,8 @@ K_THREAD_DEFINE(gpio_id, STACKSIZE, gpio_thread, NULL, NULL, NULL,
     PRIORITY, 0, 0);
 K_THREAD_DEFINE(audio_id, AUDIO_STACKSIZE, audio_thread, NULL, NULL, NULL,
     AUDIO_PRIORITY, 0, 0);
+K_THREAD_DEFINE(rtc_id, STACKSIZE, rtc_thread, NULL, NULL, NULL,
+    PRIORITY, 0, 0);
 K_THREAD_DEFINE(lvgl_demo_id, LVGL_STACKSIZE, lvgl_demo_thread, NULL, NULL, NULL,
     LVGL_PRIORITY, 0, 0);
 
@@ -49,7 +52,7 @@ int main(void)
         struct wdt_timeout_cfg wdt_config = {
             .window = {
                 .min = 0U,
-                .max = 5000U,
+                .max = 10000U,
             },
             .callback = NULL,
             .flags = WDT_FLAG_RESET_SOC,
@@ -59,7 +62,7 @@ int main(void)
         if (wdt_channel_id >= 0) {
             rc = wdt_setup(wdt, 0U);
             if (rc == 0) {
-                LOG_INF("[boot] watchdog enabled: timeout=5000ms, feed=4750ms");
+                LOG_INF("[boot] watchdog enabled: timeout=10000ms, feed=5000ms");
             } else {
                 LOG_ERR("[boot] watchdog setup failed (err %d)", rc);
                 wdt_channel_id = -1;
@@ -72,7 +75,7 @@ int main(void)
     }
 
     while (1) {
-        k_sleep(K_MSEC(4750));
+        k_sleep(K_MSEC(5000));
         if (wdt_channel_id >= 0) {
             rc = wdt_feed(wdt, wdt_channel_id);
             if (rc != 0) {

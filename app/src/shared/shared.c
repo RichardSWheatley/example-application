@@ -5,6 +5,7 @@ LOG_MODULE_REGISTER(shared, LOG_LEVEL_INF);
 
 K_SEM_DEFINE(button_sem, 0, K_SEM_MAX_LIMIT);
 K_SEM_DEFINE(graphics_ready_sem, 0, K_SEM_MAX_LIMIT);
+K_SEM_DEFINE(rtc_alarm_sem, 0, 1);
 atomic_t button_irq_count;
 atomic_t button_handled_count;
 

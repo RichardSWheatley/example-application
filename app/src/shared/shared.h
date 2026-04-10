@@ -11,6 +11,7 @@
 
 extern struct k_sem button_sem;
 extern struct k_sem graphics_ready_sem;
+extern struct k_sem rtc_alarm_sem;
 extern atomic_t button_irq_count;
 extern atomic_t button_handled_count;
 
