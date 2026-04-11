@@ -3,6 +3,5 @@
 
 menu "Drivers"
 rsource "blink/Kconfig"
-rsource "mspi/Kconfig"
 rsource "sensor/Kconfig"
 endmenu
