@@ -1,0 +1,37 @@
+# Copyright (c) 2026 Ambiq Micro Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig MSPI_FREERTOS
+	bool "FreeRTOS-style MSPI drivers"
+	help
+	  This option enables the out-of-tree mspi_freertos driver class.
+	  Drivers in this class expose a thread-safe, interrupt-driven MSPI
+	  API whose locking and completion pattern matches the one used by
+	  native FreeRTOS MSPI drivers (recursive mutex for bus ownership,
+	  binary semaphore released from ISR for completion).
+
+if MSPI_FREERTOS
+
+config MSPI_FREERTOS_INIT_PRIORITY
+	int "FreeRTOS MSPI driver init priority"
+	default KERNEL_INIT_PRIORITY_DEVICE
+	help
+	  Device driver init priority for the mspi_freertos class.
+
+module = MSPI_FREERTOS
+module-str = mspi_freertos
+source "subsys/logging/Kconfig.template.log_config"
+
+config MSPI_FREERTOS_APOLLO510
+	bool "Ambiq Apollo510 FreeRTOS MSPI driver"
+	default y
+	depends on DT_HAS_AMBIQ_APOLLO510_MSPI_FREERTOS_ENABLED
+	select PINCTRL
+	help
+	  Enable the FreeRTOS-style MSPI driver for the Ambiq Apollo510
+	  family. The driver serializes all transfers with a mutex and waits
+	  on a binary semaphore that is released from the MSPI IRQ handler,
+	  mirroring the synchronization pattern used by native FreeRTOS MSPI
+	  drivers.
+
+endif # MSPI_FREERTOS
