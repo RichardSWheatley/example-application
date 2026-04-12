@@ -1,0 +1,93 @@
+{
+    "APOLLO510": {
+        "inherits": [
+            "Target"
+        ],
+        "core": "Cortex-M4F",
+        "supported_toolchains": [
+            "GCC_ARM",
+            "ARM"
+        ],
+        "default_toolchain": "GCC_ARM",
+        "extra_labels": [
+            "Ambiq",
+            "APOLLO510"
+        ],
+        "macros": [
+            "APOLLO510",
+            "AM_PART_APOLLO510",
+            "__FPU_PRESENT=1",
+            "ARM_MATH_CM4"
+        ],
+        "supported_form_factors": [],
+        "detect_code": [
+            "0510"
+        ],
+        "device_has": [
+            "ANALOGIN",
+            "I2C",
+            "INTERRUPTIN",
+            "PORTIN",
+            "PORTINOUT",
+            "PORTOUT",
+            "SERIAL",
+            "SERIAL_ASYNCH",
+            "SLEEP",
+            "SPI",
+            "SPISLAVE",
+            "FLASH",
+            "WATCHDOG",
+            "TRNG",
+            "RTC",
+            "USTICKER",
+            "LPTICKER",
+            "RESET_REASON"
+        ],
+        "device_name": "APOLLO510",
+        "OUTPUT_EXT": "hex",
+        "mbed_rom_start": "0x00000000",
+        "mbed_rom_size": "0x400000",
+        "mbed_ram_start": "0x20000000",
+        "mbed_ram_size": "0x300000",
+        "bootloader_supported": true
+    },
+    "APOLLO510_MINI": {
+        "inherits": [
+            "APOLLO510"
+        ],
+        "extra_labels_add": [
+            "APOLLO510_MINI"
+        ],
+        "macros_add": [
+            "APOLLO510_MINI"
+        ],
+        "detect_code": [
+            "0511"
+        ],
+        "default_lib": "std",
+        "config": {
+            "hfrc_freq_hz": {
+                "help": "HFRC oscillator frequency in Hz",
+                "value": "48000000"
+            },
+            "hfrc2_freq_hz": {
+                "help": "HFRC2 oscillator frequency in Hz",
+                "value": "250000000"
+            },
+            "xtal_hs_freq_hz": {
+                "help": "High-speed crystal frequency in Hz (0 if not populated)",
+                "value": "48000000"
+            },
+            "xtal_ls_freq_hz": {
+                "help": "Low-speed 32kHz crystal frequency in Hz",
+                "value": "32768"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL",
+            "console-uart": true,
+            "console-uart-flow-control": "null",
+            "network-default-interface-type": "null"
+        }
+    }
+}
