@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config DIAG
+    bool "Support for diag utilities library"
+    help
+      Enables the small diagnostics helper library used by the example
+      application (reset cause formatting and helpers).

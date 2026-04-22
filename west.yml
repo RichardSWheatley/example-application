@@ -2,20 +2,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 manifest:
-  self:
-    west-commands: scripts/west-commands.yml
-
-  remotes:
-    - name: zephyr-ambiq-internal
-      url-base: https://github.com/AmbiqMicro/zephyr-ambiq-internal
-
   projects:
     - name: zephyr
-      remote: zephyr-ambiq-internal
-      revision: gpu-fix-apollo5
+      remote: ambiq
+      repo-path: zephyr-ambiq-internal
+      revision: ambiq-stable
       import:
         # By using name-allowlist we can clone only the modules that are
         # strictly needed by the application.
         name-allowlist:
           - cmsis_6    # required by the ARM port for Cortex-M
           - hal_ambiq # required by the custom_plank board (Ambiq based)
+  remotes:
+    - name: ambiq
+      url-base: https://github.com/AmbiqMicro

@@ -3,6 +3,7 @@
 
 menu "Custom libraries"
 
-rsource "custom/Kconfig"
+rsource "audio_utils/Kconfig"
+rsource "diag/Kconfig"
 
 endmenu

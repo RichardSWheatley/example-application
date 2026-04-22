@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config AUDIO_UTILS
+    bool "Support for audio utilities library"
+    help
+      This option enables the small audio utilities library used by the
+      example application (peak, RMS and simple VAD helpers).

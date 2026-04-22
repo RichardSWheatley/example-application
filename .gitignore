@@ -7,8 +7,9 @@
 .venv
 
 # build
-/build*
-/twister-out*
+build/
+**/build/
+# previously ignored test output directories
 
 __pycache__/
 

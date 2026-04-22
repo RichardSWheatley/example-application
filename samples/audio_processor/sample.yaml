@@ -1,0 +1,6 @@
+common:
+  tags: audio_processor
+  overlay_config: |
+    CONFIG_AUDIO_PROCESSOR=y
+tests:
+  lib.audio_processor: {}
