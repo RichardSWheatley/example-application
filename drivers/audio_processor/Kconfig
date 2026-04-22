@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config AUDIO_PROCESSOR
+    bool "Enable Audio Processor driver"
+    default n
+    select AUDIO_UTILS
+    help
+      Enable the audio_processor virtual driver which provides capture
+      metrics (peak/rms/vad) to the application. This is a simple
+      reference driver intended for examples and unit tests.

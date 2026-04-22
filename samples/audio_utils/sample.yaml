@@ -1,0 +1,4 @@
+common:
+  tags: audio
+tests:
+  lib.audio_utils: {}
