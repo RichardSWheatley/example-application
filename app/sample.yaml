@@ -13,3 +13,6 @@ tests:
   app.debug:
     extra_overlay_confs:
       - debug.conf
+  app.mcuboot:
+    sysbuild: true
+    tags: mcuboot

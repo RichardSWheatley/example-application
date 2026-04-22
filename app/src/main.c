@@ -1,6 +1,7 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/hwinfo.h>
 #include <zephyr/drivers/watchdog.h>
+#include <zephyr/dfu/mcuboot.h>
 #include "shared/shared.h"
 #include "threads/blink_threads.h"
 #include "threads/gpio_thread.h"
@@ -46,6 +47,16 @@ int main(void)
         LOG_INF("[boot] reset cause: 0x%08x", (unsigned int)cause);
     } else {
         LOG_ERR("[boot] reset cause unavailable (err %d)", rc);
+    }
+
+    /* Confirm the current MCUboot image so it is not reverted on next reboot */
+    if (!boot_is_img_confirmed()) {
+        rc = boot_write_img_confirmed();
+        if (rc == 0) {
+            LOG_INF("[boot] MCUboot image confirmed");
+        } else {
+            LOG_ERR("[boot] MCUboot image confirm failed (err %d)", rc);
+        }
     }
 
     if (device_is_ready(wdt)) {

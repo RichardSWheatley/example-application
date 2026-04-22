@@ -21,8 +21,10 @@ struct led {
 };
 
 extern const struct gpio_dt_spec button;
+extern const struct gpio_dt_spec swap_button;
 extern const struct gpio_dt_spec led;
 extern struct gpio_callback button_cb_data;
+extern struct gpio_callback swap_button_cb_data;
 extern const struct led led0;
 extern const struct led led1;
 extern const struct led led2;
