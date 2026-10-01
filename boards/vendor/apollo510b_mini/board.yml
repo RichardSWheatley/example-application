@@ -1,0 +1,6 @@
+board:
+  name: apollo510b_mini
+  full_name: Apollo 510 Blue Mini Board
+  vendor: vendor
+  socs:
+  - name: apollo510b

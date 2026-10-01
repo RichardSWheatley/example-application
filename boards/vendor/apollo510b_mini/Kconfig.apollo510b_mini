@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2026 Ambiq Micro Inc. <www.ambiq.com>
+
+config BOARD_APOLLO510B_MINI
+	select SOC_APOLLO510B
