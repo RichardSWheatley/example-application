@@ -24,6 +24,10 @@ target_sources(app PRIVATE
   src/threads/rtc_thread.c
 )
 
+target_sources_ifdef(CONFIG_BT app PRIVATE
+  src/threads/ble_hr_thread.c
+)
+
 target_sources_ifdef(CONFIG_LVGL app PRIVATE
   src/threads/lvgl_demo.c
 )
