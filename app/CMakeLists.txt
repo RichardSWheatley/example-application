@@ -21,14 +21,22 @@ target_sources(app PRIVATE
   src/shared/shared.c
   src/threads/blink_threads.c
   src/threads/gpio_thread.c
-  src/threads/lvgl_demo.c
-  src/threads/audio_thread.c
   src/threads/rtc_thread.c
 )
 
+target_sources_ifdef(CONFIG_LVGL app PRIVATE
+  src/threads/lvgl_demo.c
+)
+
+target_sources_ifdef(CONFIG_AUDIO_DMIC app PRIVATE
+  src/threads/audio_thread.c
+)
+
+if(CONFIG_LVGL)
 target_include_directories(app PRIVATE
   ${LVGL_DIR}/demos/
 )
+endif()
 
 target_sources_ifdef(CONFIG_LV_USE_DEMO_MUSIC app PRIVATE
     ${LVGL_DIR}/demos/music/lv_demo_music_list.c

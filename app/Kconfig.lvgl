@@ -2,6 +2,8 @@
 # Trimmed to avoid recursive inclusion of Kconfig.zephyr
 # SPDX-License-Identifier: Apache-2.0
 
+if LVGL
+
 choice LV_Z_DEMO
 	prompt "LVGL demo to build"
 	# default LV_Z_DEMO_WIDGETS
@@ -54,7 +56,7 @@ if LV_Z_DEMO_RENDER
 
 config LV_Z_DEMO_RENDER_SCENE_DYNAMIC
 	bool "Switch scenes dynamically"
-    default y
+	default y
 	help
 	  Switch between scenes to render dynamically.
 
@@ -73,4 +75,6 @@ config LV_Z_DEMO_RENDER_DYNAMIC_SCENE_TIMEOUT
 	help
 	  Seconds each rendered scenar is shown
 
-endif
+endif # LV_Z_DEMO_RENDER
+
+endif # LVGL
