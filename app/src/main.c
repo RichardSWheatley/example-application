@@ -11,6 +11,10 @@
 #include "threads/ble_hr_thread.h"
 #endif
 
+#if defined(CONFIG_MSPI)
+#include "threads/mspi_stress_thread.h"
+#endif
+
 #if defined(CONFIG_LVGL)
 #include "threads/lvgl_demo.h"
 #endif
@@ -23,16 +27,18 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 
 #define STACKSIZE 1024
 #define BLE_STACKSIZE 2048
+#define MSPI_STACKSIZE 8192
 #define AUDIO_STACKSIZE 4096
 #define LVGL_STACKSIZE 8192
 
 #define PRIORITY 7
 #define BLE_PRIORITY 7
+#define MSPI_PRIORITY 7
 #define AUDIO_PRIORITY 8
 #define LVGL_PRIORITY 9
 
 /* Must match GRAPHICS_RELEASED_THREADS in lvgl_demo.c */
-#define GRAPHICS_RELEASED_THREADS 5U
+#define GRAPHICS_RELEASED_THREADS 6U
 
 K_THREAD_DEFINE(blink0_id, STACKSIZE, blink0_thread, NULL, NULL, NULL,
 		PRIORITY, 0, 0);
@@ -46,6 +52,11 @@ K_THREAD_DEFINE(rtc_id, STACKSIZE, rtc_thread, NULL, NULL, NULL,
 #if defined(CONFIG_BT)
 K_THREAD_DEFINE(ble_hr_id, BLE_STACKSIZE, ble_hr_thread, NULL, NULL, NULL,
 		BLE_PRIORITY, 0, 0);
+#endif
+
+#if defined(CONFIG_MSPI)
+K_THREAD_DEFINE(mspi_stress_id, MSPI_STACKSIZE, mspi_stress_thread, NULL, NULL,
+		NULL, MSPI_PRIORITY, 0, 0);
 #endif
 
 #if defined(CONFIG_AUDIO_DMIC)

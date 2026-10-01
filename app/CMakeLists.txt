@@ -28,6 +28,15 @@ target_sources_ifdef(CONFIG_BT app PRIVATE
   src/threads/ble_hr_thread.c
 )
 
+target_sources_ifdef(CONFIG_MSPI app PRIVATE
+  src/threads/mspi_stress_thread.c
+  src/threads/nand_w25n_emul.c
+)
+
+if(CONFIG_MSPI)
+  target_include_directories(app PRIVATE ${ZEPHYR_BASE}/drivers/mspi)
+endif()
+
 target_sources_ifdef(CONFIG_LVGL app PRIVATE
   src/threads/lvgl_demo.c
 )
