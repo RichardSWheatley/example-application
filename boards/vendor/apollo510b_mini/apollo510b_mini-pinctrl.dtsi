@@ -24,6 +24,24 @@
 		};
 	};
 
+	/* Console / USB-UART bridge — matches apollo510b_evb */
+	uart1_default: uart1_default {
+		group1 {
+			pinmux = <UART1TX_P12>;
+		};
+
+		group2 {
+			pinmux = <UART1RX_P14>;
+			input-enable;
+		};
+	};
+
+	uart1_sleep: uart1_sleep {
+		group1 {
+			pinmux = <GPIO_P12>, <GPIO_P14>;
+		};
+	};
+
 	swo_default: swo_default {
 		group0 {
 			pinmux = <SWO_P28>;

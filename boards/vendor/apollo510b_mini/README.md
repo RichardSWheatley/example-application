@@ -14,6 +14,6 @@ west build -b apollo510b_mini app -- "-DBOARD_ROOT=$PWD" "-DZEPHYR_EXTRA_MODULES
 
 ## Notes
 
+- Console is on UART1 (P12/P14), same as `apollo510b_evb` USB-UART.
 - BT reset uses GPIO 93 (`gpio64_95` pin 29), same as `apollo510b_evb`.
   Mini BTN0 was moved off that pin to avoid the conflict.
-- Console remains on UART0 (mini wiring).
