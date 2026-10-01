@@ -30,11 +30,16 @@ target_sources_ifdef(CONFIG_BT app PRIVATE
 
 target_sources_ifdef(CONFIG_MSPI app PRIVATE
   src/threads/mspi_stress_thread.c
-  src/threads/nand_w25n_emul.c
+  src/whoop_spi/spi_bus_mspi_driver.c
+  src/whoop_spi/spi_bus.c
+  src/whoop_spi/nand_cmd.c
 )
 
 if(CONFIG_MSPI)
-  target_include_directories(app PRIVATE ${ZEPHYR_BASE}/drivers/mspi)
+  target_include_directories(app PRIVATE
+    ${ZEPHYR_BASE}/drivers/mspi
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/whoop_spi
+  )
 endif()
 
 target_sources_ifdef(CONFIG_LVGL app PRIVATE
