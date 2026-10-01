@@ -2,17 +2,26 @@
 # SPDX-License-Identifier: Apache-2.0
 
 manifest:
+  remotes:
+    - name: ambiq
+      url-base: https://github.com/AmbiqMicro
+
   projects:
     - name: zephyr
       remote: ambiq
       repo-path: zephyr-ambiq-internal
-      revision: ambiq-stable
+      # origin/ambiq-stable
+      revision: 4cbbf5b4054020788629f05df0d9962ef35b93e9
       import:
         # By using name-allowlist we can clone only the modules that are
         # strictly needed by the application.
         name-allowlist:
           - cmsis_6    # required by the ARM port for Cortex-M
-          - hal_ambiq # required by the custom_plank board (Ambiq based)
-  remotes:
-    - name: ambiq
-      url-base: https://github.com/AmbiqMicro
+          - hal_ambiq_internal
+
+    # Pin matches zephyr/west.yml @ 4cbbf5b40540 (ambiq-stable).
+    - name: hal_ambiq_internal
+      remote: ambiq
+      repo-path: hal_ambiq_internal
+      revision: 1577f6e52eebdf5a3a2e2082d5161c1c81858948
+      path: modules/hal/ambiq
